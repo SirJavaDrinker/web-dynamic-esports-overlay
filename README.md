@@ -7,9 +7,9 @@ Allows real-time editing of match data such as score, map list, team names, and 
 ### Ensure NodeJS is installed locally.
 Run `node -v` within a terminal to check if you have it installed / what version you have.
 - visit https://nodejs.org/en/download for more instructions and info on NodeJS
-### Clone the repository
-```git clone https://github.com/SirJavaDrinker/web-dynamic-esports-overlay.git```
-### Navigate to the project directory.
+### Setup (Terminal)
+Run: ```git clone https://github.com/SirJavaDrinker/web-dynamic-esports-overlay.git``` to clone the repository.
+
 Once inside the correct directory, simply run `node index.js` to start up the server.
 
 By default this will open up a locally hosted server at port: `9999`
