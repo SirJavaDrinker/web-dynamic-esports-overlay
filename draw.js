@@ -32,7 +32,6 @@ logoImage2.onerror = function() {
     console.error('Failed to load logo image 2');
 };
 
-// TODO: Make this changable within the Admin UI
 logoImage1.src = '/logos/GATO.png';
 logoImage2.src = '/logos/GATO.png';
 
