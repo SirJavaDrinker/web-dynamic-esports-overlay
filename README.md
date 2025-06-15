@@ -18,3 +18,5 @@ Navigate to:
 - http://localhost:9999/ 		to view the overlay.
 - http://localhost:9999/admin 	to view and access the overlay settings panel.
 
+## OBS Setup
+In the sources tab, add a new browser source, then add in the overlay URL in the URL bar... and done! As long as the server is running in a terminal, it should work!
