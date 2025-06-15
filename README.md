@@ -15,6 +15,6 @@ Once inside the correct directory, simply run `node index.js` to start up the se
 By default this will open up a locally hosted server at port: `9999`
 
 Navigate to:
-- https://localhost:9999/ 		to view the overlay.
-- https://localhost:9999/admin 	to view and access the overlay settings panel.
+- http://localhost:9999/ 		to view the overlay.
+- http://localhost:9999/admin 	to view and access the overlay settings panel.
 
