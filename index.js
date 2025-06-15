@@ -2,7 +2,10 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const hostname = '127.0.0.1';
+const hostname = 'localhost';
+
+// Change the below line if port 9999 is for some reason already taken up.
+// TODO: Make port & hostname editable via json file or other method outside of direct editing.
 const port = 9999;
 
 const server = http.createServer((req, res) => {
@@ -11,6 +14,8 @@ const server = http.createServer((req, res) => {
 
   if (url === '/' && method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'text/html' });
+
+    // Adding font and setting up canvas to be used in draw.js
     res.end(`
       <!DOCTYPE html>
       <html>
@@ -29,27 +34,27 @@ const server = http.createServer((req, res) => {
   } 
   
   else if (url === '/draw.js' && method === 'GET') {
-    // Serve JS
+    // Serves draw.js
     const filePath = path.join(__dirname, 'draw.js');
     fs.readFile(filePath, (err, data) => {
       if (err) {
         res.writeHead(500);
-        return res.end('Error loading JS');
+        return res.end('Loading error: could not load draw.js');
       }
       res.writeHead(200, { 'Content-Type': 'text/javascript' });
       res.end(data);
     });
-
   } 
   
   else if (url === '/data' && method === 'GET') {
+    // Serves JSON data.json
     const data = fs.readFileSync('data.json', 'utf-8');
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
-
   } 
   
   else if (url === '/data' && method === 'POST') {
+    // Recieves updated JSON data and writes to data.json
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -57,79 +62,90 @@ const server = http.createServer((req, res) => {
       res.writeHead(200);
       res.end('Data saved');
     });
-
-  } else if (url === '/admin' && method === 'GET') {
+  } 
+  
+  else if (url === '/admin' && method === 'GET') {
     const htmlPath = path.join(__dirname, 'adminpage.html');
     const dataPath = path.join(__dirname, 'data.json');
 
+    // Reads data.json first
     fs.readFile(dataPath, 'utf8', (err, jsonContent) => {
       if (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         return res.end('Error loading data.json');
       }
 
+      // Then reads adminpage.html
       fs.readFile(htmlPath, 'utf8', (err, htmlContent) => {
         if (err) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end('Error loading admin.html');
         }
 
+        // Injects data.json into adminpage.html
         const output = htmlContent.replace('${json}', jsonContent);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
         res.end(output);
       });
     });
-}
-else if (url.startsWith('/logos/') && method === 'GET') {
-  const fileName = url.substring(7); 
-  const filePath = path.join(__dirname, 'logos', fileName);
-  
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404);
-      return res.end('Image not found');
-    }
-    
-    const ext = path.extname(fileName).toLowerCase();
-    const contentType = {
-      '.png': 'image/png',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.gif': 'image/gif',
-      '.svg': 'image/svg+xml'
-    }[ext] || 'application/octet-stream';
-    
-    res.writeHead(200, { 'Content-Type': contentType });
-    res.end(data);
-  });
-}
-else if (url === '/logos-list' && method === 'GET') {
-  const logosPath = path.join(__dirname, 'logos');
-  
-  fs.readdir(logosPath, (err, files) => {
-    if (err) {
-      res.writeHead(500);
-      return res.end('[]');
-    }
-    
-    const imageFiles = files.filter(file => {
-      const ext = path.extname(file).toLowerCase();
-      return ['.png', '.jpg', '.jpeg', '.gif', '.svg'].includes(ext);
-    });
-
-    console.log(imageFiles);
-    
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify(imageFiles));
-  });
-}
-else {
-    res.writeHead(404);
-    res.end('Not found');
   }
-});
+  else if (url.startsWith('/logos/') && method === 'GET') {
+    const fileName = url.substring(7);
+    const filePath = path.join(__dirname, 'logos', fileName);
+    
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('Image not found');
+      }
+      
+      // Set type base on extension
+      const ext = path.extname(fileName).toLowerCase();
+      const contentType = {
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml'
+      }[ext] || 'application/octet-stream';
+      
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  }
+  else if (url === '/logos-list' && method === 'GET') {
+    const logosPath = path.join(__dirname, 'logos');
+    
+    // Serves files within the /logos/ file
+    fs.readdir(logosPath, (err, files) => {
+      if (err) {
+        res.writeHead(500);
+        return res.end('[]');
+      }
+      
+      // Filter for image files
+      const imageFiles = files.filter(file => {
+        const ext = path.extname(file).toLowerCase();
+        return ['.png', '.jpg', '.jpeg', '.gif', '.svg'].includes(ext);
+      });
 
+      //console.log(imageFiles);
+      
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(imageFiles));
+    });
+  }
+  else {
+      res.writeHead(404);
+      res.end('Not found');
+    }
+  });
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
+  console.log(`----------------------------------------------------------------`)
+  console.log(` | ${hostname}:${port}/         will display the overlay.`)
+  console.log(` | ${hostname}:${port}/admin    will provide the control panel.`)
+  console.log(`----------------------------------------------------------------`)
+  console.log(`You may press ctrl+c to close the server.`);
 });

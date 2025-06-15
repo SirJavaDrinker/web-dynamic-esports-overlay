@@ -16,7 +16,7 @@ let logoImage1 = new Image();
 let image1Loaded = false;
 logoImage1.onload = function() {
     image1Loaded = true;
-    console.log('Logo image 1 loaded successfully');
+    //console.log('Logo image 1 loaded successfully');
 };
 logoImage1.onerror = function() {
     console.error('Failed to load logo image 1');
@@ -26,17 +26,13 @@ let logoImage2 = new Image();
 let image2Loaded = false;
 logoImage2.onload = function() {
     image2Loaded = true;
-    console.log('Logo image 2 loaded successfully');
+    //console.log('Logo image 2 loaded successfully');
 };
 logoImage2.onerror = function() {
     console.error('Failed to load logo image 2');
 };
 
-logoImage1.src = '/logos/GATO.png';
-logoImage2.src = '/logos/GATO.png';
-
-
-
+// Request data from server to use within the overlay
 setInterval(() => {
   fetch('/data')
     .then(res => res.json())
@@ -54,7 +50,6 @@ setInterval(() => {
 
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 
     // ----------------------------------------- TEAM BAR LEFT
     ctx.fillStyle=teamColor[0];
@@ -95,7 +90,7 @@ function update() {
     // ----------------------------------------
 
 
-
+    // Draw team labels.
     ctx.fillStyle='white';
     ctx.textAlign="center";
     ctx.textBaseline = "top";
@@ -104,7 +99,7 @@ function update() {
     ctx.fillText(teamNames[1], centerX+(700/2), 3)
 
     
-
+    // Draw team map scores.
     const scorePosA = [centerX-(80), 90];
     const scorePosB = [centerX+(80), 90];
     
@@ -152,6 +147,7 @@ function update() {
     ctx.stroke
     ctx.fill();
 
+    // Draw images if they're loaded.
     if (image1Loaded) {
         drawImage(70, 70, logoImage1, centerX-595, 35);
     }
@@ -159,16 +155,20 @@ function update() {
         drawImage(70, 70, logoImage2, centerX+595, 35);
     }
 
+
     ctx.fillStyle='white';
     ctx.textAlign="center";
     ctx.textBaseline = "top";
     ctx.font = 'bold 27px "Exo 2"';
+
+    // !!! Change this line if you wish to change the league title/season. !!!
+    // TODO: This editable via json file or other method outside of direct editing.
     ctx.fillText("CSK League S3", centerX, 4)
 
-    ctx.font = 'bold 20px "Exo 2"';
+    ctx.font = 'bold 16px "Exo 2"';
     ctx.textBaseline = "bottom";
     ctx.textAlign="right";
-    ctx.fillText("There is a two minute delay.", centerX*2, canvas.height);
+    ctx.fillText("UI by @javadrinker  ", centerX*2, canvas.height);
 
 
 

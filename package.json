@@ -1,7 +1,7 @@
 {
   "name": "overlay",
   "version": "1.0.0",
-  "description": "A overlay for CSK",
+  "description": "An overlay orginally built for CSK League",
   "main": "index.js",
   "author": "javadrinker",
   "license": "MIT"

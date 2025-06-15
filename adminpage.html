@@ -1,43 +1,56 @@
 <!DOCTYPE html>
+<!-- For the love of god I need to make this more user-friendly -->
 <html>
 <head>
   <title>Admin Panel</title>
   <style>
     body { font-family: sans-serif; margin: 40px; background: #f9f9f9; }
     label { display: block; margin-top: 15px; }
-    input, textarea, select { width: 300px; padding: 5px; margin-top: 5px; }
-    textarea { height: 60px; }
+    input, textarea, select { width: 50px; padding: 5px; margin-top: 5px; }
+
+    textarea { height: 15px; width: 100px; }
     button { margin-top: 20px; padding: 10px 20px; }
-    .logo-preview { width: 50px; height: 50px; object-fit: contain; margin-left: 10px; }
+
+    .logo-preview { width: 30px; height: 30px; object-fit: contain; margin-left: 10px; }
+
+    .logo-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;  
+    }
   </style>
 </head>
 <body>
-  <h2>Bwomp</h2>
+  <h2>Created by @javadrinker</h2>
   <form id="admin-form">
 
-    Score: <input type="text" name="score">
+    Score: <input type="text" name="score1"> <input type="text" name="score2">
     Index: <input type="number" name="currentMap">
 
     <label>Map Titles<br>
-      <textarea name="mapTitles"></textarea>
+      <textarea name="mapTitle1"></textarea>
+      <textarea name="mapTitle2"></textarea>
+      <textarea name="mapTitle3"></textarea>
     </label>
 
-    <label>Team Names (e.g. ["BAIHUA","OTHER"])<br>
-      <textarea name="teamNames"></textarea>
+    <label>Team Names<br>
+      <textarea name="teamName1"></textarea>
+      <textarea name="teamName2"></textarea>
     </label>
 
-    <label>Team Colors (e.g. ["green","gray"])<br>
-      <textarea name="teamColor"></textarea>
+    <label>Team Colors<br>
+      <textarea name="teamColor1"></textarea>
+      <textarea name="teamColor2"></textarea>
     </label>
 
-    <label>Team 1 Logo<br>
+    <label class="logo-label">Team 1 Logo<br>
       <select name="teamLogo1" id="teamLogo1">
         <option value="">No Logo</option>
       </select>
       <img id="logo1Preview" class="logo-preview" style="display:none;">
     </label>
 
-    <label>Team 2 Logo<br>
+    <label class="logo-label">Team 2 Logo<br>
       <select name="teamLogo2" id="teamLogo2">
         <option value="">No Logo</option>
       </select>
@@ -100,11 +113,20 @@
 
     // Initialize form with existing data
     function initializeForm() {
-      document.querySelector('input[name="score"]').value = JSON.stringify(data.score);
+      document.querySelector('input[name="score1"]').value = data.score[0];
+      document.querySelector('input[name="score2"]').value = data.score[1];
+
       document.querySelector('input[name="currentMap"]').value = data.currentMap;
-      document.querySelector('textarea[name="mapTitles"]').value = JSON.stringify(data.mapTitles);
-      document.querySelector('textarea[name="teamNames"]').value = JSON.stringify(data.teamNames);
-      document.querySelector('textarea[name="teamColor"]').value = JSON.stringify(data.teamColor);
+
+      document.querySelector('textarea[name="mapTitle1"]').value = data.mapTitles[0];
+      document.querySelector('textarea[name="mapTitle2"]').value = data.mapTitles[1];
+      document.querySelector('textarea[name="mapTitle3"]').value = data.mapTitles[2];
+
+      document.querySelector('textarea[name="teamName1"]').value = data.teamNames[0];
+      document.querySelector('textarea[name="teamName2"]').value = data.teamNames[1];
+      
+      document.querySelector('textarea[name="teamColor1"]').value = data.teamColor[0];
+      document.querySelector('textarea[name="teamColor2"]').value = data.teamColor[1];
     }
 
     // Initialize form and load logos
@@ -125,11 +147,24 @@
       e.preventDefault();
 
       const updated = {
-        score: JSON.parse(document.querySelector('input[name="score"]').value),
+        score: [
+          parseInt(document.querySelector('input[name="score1"]').value),
+          parseInt(document.querySelector('input[name="score2"]').value)
+        ],
         currentMap: parseInt(document.querySelector('input[name="currentMap"]').value),
-        mapTitles: JSON.parse(document.querySelector('textarea[name="mapTitles"]').value),
-        teamNames: JSON.parse(document.querySelector('textarea[name="teamNames"]').value),
-        teamColor: JSON.parse(document.querySelector('textarea[name="teamColor"]').value),
+        mapTitles: [
+          document.querySelector('textarea[name="mapTitle1"]').value,
+          document.querySelector('textarea[name="mapTitle2"]').value,
+          document.querySelector('textarea[name="mapTitle3"]').value
+        ],
+        teamNames: [
+          document.querySelector('textarea[name="teamName1"]').value,
+          document.querySelector('textarea[name="teamName2"]').value
+        ],
+        teamColor: [
+          document.querySelector('textarea[name="teamColor1"]').value,
+          document.querySelector('textarea[name="teamColor2"]').value
+        ],
         teamLogos: [
           document.getElementById('teamLogo1').value,
           document.getElementById('teamLogo2').value
@@ -145,36 +180,31 @@
       document.getElementById('status').textContent = await res.text();
     });
 
-    // Swap Teams Logic
+    // Swap Teams Logic (fixed for new form structure)
     document.getElementById('swap-btn').addEventListener('click', () => {
-      const scoreInput = document.querySelector('input[name="score"]');
-      const teamNamesInput = document.querySelector('textarea[name="teamNames"]');
-      const teamColorInput = document.querySelector('textarea[name="teamColor"]');
+      // Swap Scores
+      const score1 = document.querySelector('input[name="score1"]');
+      const score2 = document.querySelector('input[name="score2"]');
+      [score1.value, score2.value] = [score2.value, score1.value];
+
+      // Swap Team Names
+      const teamName1 = document.querySelector('textarea[name="teamName1"]');
+      const teamName2 = document.querySelector('textarea[name="teamName2"]');
+      [teamName1.value, teamName2.value] = [teamName2.value, teamName1.value];
+
+      // Swap Team Colors
+      const teamColor1 = document.querySelector('textarea[name="teamColor1"]');
+      const teamColor2 = document.querySelector('textarea[name="teamColor2"]');
+      [teamColor1.value, teamColor2.value] = [teamColor2.value, teamColor1.value];
+
+      // Swap Logos
       const teamLogo1 = document.getElementById('teamLogo1');
       const teamLogo2 = document.getElementById('teamLogo2');
+      [teamLogo1.value, teamLogo2.value] = [teamLogo2.value, teamLogo1.value];
 
-      try {
-        const score = JSON.parse(scoreInput.value);
-        const teamNames = JSON.parse(teamNamesInput.value);
-        const teamColor = JSON.parse(teamColorInput.value);
-
-        scoreInput.value = JSON.stringify(score.reverse());
-        teamNamesInput.value = JSON.stringify(teamNames.reverse());
-        teamColorInput.value = JSON.stringify(teamColor.reverse());
-        
-        // Swap logos
-        const logo1Value = teamLogo1.value;
-        const logo2Value = teamLogo2.value;
-        teamLogo1.value = logo2Value;
-        teamLogo2.value = logo1Value;
-        
-        // Update previews
-        updateLogoPreview('teamLogo1', 'logo1Preview');
-        updateLogoPreview('teamLogo2', 'logo2Preview');
-        
-      } catch (e) {
-        alert("Error: Make sure all team-related fields contain valid JSON arrays.");
-      }
+      // Update logo previews
+      updateLogoPreview('teamLogo1', 'logo1Preview');
+      updateLogoPreview('teamLogo2', 'logo2Preview');
     });
   </script>
 </body>
