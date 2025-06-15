@@ -10,7 +10,6 @@ const server = http.createServer((req, res) => {
   const method = req.method;
 
   if (url === '/' && method === 'GET') {
-    // Serve HTML
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(`
       <!DOCTYPE html>
@@ -44,7 +43,6 @@ const server = http.createServer((req, res) => {
   } 
   
   else if (url === '/data' && method === 'GET') {
-    // Serve JSON data
     const data = fs.readFileSync('data.json', 'utf-8');
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
@@ -52,7 +50,6 @@ const server = http.createServer((req, res) => {
   } 
   
   else if (url === '/data' && method === 'POST') {
-    // Receive and save new JSON data
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', () => {
@@ -65,21 +62,18 @@ const server = http.createServer((req, res) => {
     const htmlPath = path.join(__dirname, 'adminpage.html');
     const dataPath = path.join(__dirname, 'data.json');
 
-    // Read data.json first
     fs.readFile(dataPath, 'utf8', (err, jsonContent) => {
       if (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         return res.end('Error loading data.json');
       }
 
-      // Then read admin.html
       fs.readFile(htmlPath, 'utf8', (err, htmlContent) => {
         if (err) {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end('Error loading admin.html');
         }
 
-        // Inject the JSON into the HTML
         const output = htmlContent.replace('${json}', jsonContent);
 
         res.writeHead(200, { 'Content-Type': 'text/html' });
@@ -88,7 +82,7 @@ const server = http.createServer((req, res) => {
     });
 }
 else if (url.startsWith('/logos/') && method === 'GET') {
-  const fileName = url.substring(7); // Remove '/logos/'
+  const fileName = url.substring(7); 
   const filePath = path.join(__dirname, 'logos', fileName);
   
   fs.readFile(filePath, (err, data) => {
@@ -97,7 +91,6 @@ else if (url.startsWith('/logos/') && method === 'GET') {
       return res.end('Image not found');
     }
     
-    // Set appropriate content type based on file extension
     const ext = path.extname(fileName).toLowerCase();
     const contentType = {
       '.png': 'image/png',
@@ -120,7 +113,6 @@ else if (url === '/logos-list' && method === 'GET') {
       return res.end('[]');
     }
     
-    // Filter for image files
     const imageFiles = files.filter(file => {
       const ext = path.extname(file).toLowerCase();
       return ['.png', '.jpg', '.jpeg', '.gif', '.svg'].includes(ext);
