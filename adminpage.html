@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; background: #f9f9f9; }
+    label { display: block; margin-top: 15px; }
+    input, textarea, select { width: 300px; padding: 5px; margin-top: 5px; }
+    textarea { height: 60px; }
+    button { margin-top: 20px; padding: 10px 20px; }
+    .logo-preview { width: 50px; height: 50px; object-fit: contain; margin-left: 10px; }
+  </style>
+</head>
+<body>
+  <h2>Bwomp</h2>
+  <form id="admin-form">
+
+    Score: <input type="text" name="score">
+    Index: <input type="number" name="currentMap">
+
+    <label>Map Titles<br>
+      <textarea name="mapTitles"></textarea>
+    </label>
+
+    <label>Team Names (e.g. ["BAIHUA","OTHER"])<br>
+      <textarea name="teamNames"></textarea>
+    </label>
+
+    <label>Team Colors (e.g. ["green","gray"])<br>
+      <textarea name="teamColor"></textarea>
+    </label>
+
+    <label>Team 1 Logo<br>
+      <select name="teamLogo1" id="teamLogo1">
+        <option value="">No Logo</option>
+      </select>
+      <img id="logo1Preview" class="logo-preview" style="display:none;">
+    </label>
+
+    <label>Team 2 Logo<br>
+      <select name="teamLogo2" id="teamLogo2">
+        <option value="">No Logo</option>
+      </select>
+      <img id="logo2Preview" class="logo-preview" style="display:none;">
+    </label>
+    
+    <button type="submit">Save</button>
+    
+    <button type="button" id="swap-btn">Swap Teams</button>
+    <p id="status"></p>
+  </form>
+  <script>
+    const data = ${json};
+
+    // Load available logos
+    async function loadLogos() {
+      try {
+        const response = await fetch('/logos-list');
+        const logos = await response.json();
+        
+        const select1 = document.getElementById('teamLogo1');
+        const select2 = document.getElementById('teamLogo2');
+        
+        logos.forEach(logo => {
+          const option1 = document.createElement('option');
+          option1.value = logo;
+          option1.textContent = logo;
+          select1.appendChild(option1);
+          
+          const option2 = document.createElement('option');
+          option2.value = logo;
+          option2.textContent = logo;
+          select2.appendChild(option2);
+        });
+
+        // Set team logos AFTER logos are loaded
+        if (data.teamLogos && data.teamLogos.length >= 2) {
+          select1.value = data.teamLogos[0] || '';
+          select2.value = data.teamLogos[1] || '';
+          updateLogoPreview('teamLogo1', 'logo1Preview');
+          updateLogoPreview('teamLogo2', 'logo2Preview');
+        }
+      } catch (error) {
+        console.error('Failed to load logos:', error);
+      }
+    }
+
+    // Preview logo
+    function updateLogoPreview(selectId, previewId) {
+      const select = document.getElementById(selectId);
+      const preview = document.getElementById(previewId);
+      
+      if (select.value) {
+        preview.src = '/logos/' + select.value;
+        preview.style.display = 'inline';
+      } else {
+        preview.style.display = 'none';
+      }
+    }
+
+    // Initialize form with existing data
+    function initializeForm() {
+      document.querySelector('input[name="score"]').value = JSON.stringify(data.score);
+      document.querySelector('input[name="currentMap"]').value = data.currentMap;
+      document.querySelector('textarea[name="mapTitles"]').value = JSON.stringify(data.mapTitles);
+      document.querySelector('textarea[name="teamNames"]').value = JSON.stringify(data.teamNames);
+      document.querySelector('textarea[name="teamColor"]').value = JSON.stringify(data.teamColor);
+    }
+
+    // Initialize form and load logos
+    initializeForm();
+    loadLogos();
+
+    // Logo preview event listeners
+    document.getElementById('teamLogo1').addEventListener('change', () => {
+      updateLogoPreview('teamLogo1', 'logo1Preview');
+    });
+
+    document.getElementById('teamLogo2').addEventListener('change', () => {
+      updateLogoPreview('teamLogo2', 'logo2Preview');
+    });
+
+    // Handle form submission
+    document.getElementById('admin-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const updated = {
+        score: JSON.parse(document.querySelector('input[name="score"]').value),
+        currentMap: parseInt(document.querySelector('input[name="currentMap"]').value),
+        mapTitles: JSON.parse(document.querySelector('textarea[name="mapTitles"]').value),
+        teamNames: JSON.parse(document.querySelector('textarea[name="teamNames"]').value),
+        teamColor: JSON.parse(document.querySelector('textarea[name="teamColor"]').value),
+        teamLogos: [
+          document.getElementById('teamLogo1').value,
+          document.getElementById('teamLogo2').value
+        ]
+      };
+
+      const res = await fetch('/data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+      });
+
+      document.getElementById('status').textContent = await res.text();
+    });
+
+    // Swap Teams Logic
+    document.getElementById('swap-btn').addEventListener('click', () => {
+      const scoreInput = document.querySelector('input[name="score"]');
+      const teamNamesInput = document.querySelector('textarea[name="teamNames"]');
+      const teamColorInput = document.querySelector('textarea[name="teamColor"]');
+      const teamLogo1 = document.getElementById('teamLogo1');
+      const teamLogo2 = document.getElementById('teamLogo2');
+
+      try {
+        const score = JSON.parse(scoreInput.value);
+        const teamNames = JSON.parse(teamNamesInput.value);
+        const teamColor = JSON.parse(teamColorInput.value);
+
+        scoreInput.value = JSON.stringify(score.reverse());
+        teamNamesInput.value = JSON.stringify(teamNames.reverse());
+        teamColorInput.value = JSON.stringify(teamColor.reverse());
+        
+        // Swap logos
+        const logo1Value = teamLogo1.value;
+        const logo2Value = teamLogo2.value;
+        teamLogo1.value = logo2Value;
+        teamLogo2.value = logo1Value;
+        
+        // Update previews
+        updateLogoPreview('teamLogo1', 'logo1Preview');
+        updateLogoPreview('teamLogo2', 'logo2Preview');
+        
+      } catch (e) {
+        alert("Error: Make sure all team-related fields contain valid JSON arrays.");
+      }
+    });
+  </script>
+</body>
+</html>
