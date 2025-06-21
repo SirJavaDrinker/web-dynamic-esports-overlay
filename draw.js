@@ -172,11 +172,11 @@ function update() {
 
 
 
-    ctx.font = 'bold 28px "Exo 2"';
+    ctx.font = 'bold 24px "Exo 2"';
 
     // Find box dimensions based on text size
-    const padding = 25;
-    const boxHeight = 30;
+    const padding = 22;
+    const boxHeight = 26;
     const shiftLeft = -20;
 
     let currentX = -20;
@@ -185,8 +185,12 @@ function update() {
     for (let i = 0; i < 3; i++) {
         const textWidth = ctx.measureText(mapTitles[i]).width;
         const boxWidth = textWidth + padding * 2;
+
+        const grad=ctx.createLinearGradient(currentX, 0, currentX+boxWidth,0);
+        grad.addColorStop(0, "rgba(255, 255, 255, 0.6)");
+        grad.addColorStop(1, "rgba(255, 255, 255, 0.4)");
         
-        ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+        ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.moveTo(currentX, canvas.height); // bottom left
         ctx.lineTo(currentX + boxWidth, canvas.height); // bottom right
