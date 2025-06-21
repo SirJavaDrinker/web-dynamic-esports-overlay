@@ -58,12 +58,16 @@
     </label>
     
     <button type="submit">Save</button>
-    
     <button type="button" id="swap-btn">Swap Teams</button>
+    <button type="button" id="color-btn">Color Fill</button>
     <p id="status"></p>
   </form>
+
+  <p>Intended to be used in tandem with OBS or a fork of OBS.</p>
   <script>
     const data = ${json};
+    const auto_colors = ${colors};
+    
 
     // Load available logos
     async function loadLogos() {
@@ -204,6 +208,33 @@
       // Update logo previews
       updateLogoPreview('teamLogo1', 'logo1Preview');
       updateLogoPreview('teamLogo2', 'logo2Preview');
+    });
+  
+    document.getElementById('color-btn').addEventListener('click', () => {
+      const teamLogo1 = document.getElementById('teamLogo1').value;
+      const teamLogo2 = document.getElementById('teamLogo2').value;
+      
+      const teamColor1 = document.querySelector('textarea[name="teamColor1"]');
+      const teamColor2 = document.querySelector('textarea[name="teamColor2"]');
+      
+      // Strip .png extension from logo names for color lookup
+      const logo1Key = teamLogo1 ? teamLogo1.replace('.png', '') : '';
+      const logo2Key = teamLogo2 ? teamLogo2.replace('.png', '') : '';
+      
+      // Fill colors based on selected logos
+      if (logo1Key && auto_colors[logo1Key]) {
+        teamColor1.value = auto_colors[logo1Key];
+      }
+      
+      if (logo2Key && auto_colors[logo2Key]) {
+        teamColor2.value = auto_colors[logo2Key];
+      }
+      
+      if (filled.length <= 0) {
+        message = 'No colors to fill (select logos first or colors not found)';
+      }
+      
+      document.getElementById('status').textContent = "Filled in colors";
     });
   </script>
 </body>

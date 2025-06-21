@@ -8,7 +8,7 @@ const hostname = 'localhost';
 // TODO: Make port & hostname editable via json file or other method outside of direct editing.
 const port = 9999;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const url = req.url;
   const method = req.method;
 
@@ -52,6 +52,13 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
   } 
+
+  else if (url === '/colors' && method === 'GET') {
+    // Serves JSON colors.json
+    const data = fs.readFileSync('colors.json', 'utf-8');
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(data);
+  }
   
   else if (url === '/data' && method === 'POST') {
     // Recieves updated JSON data and writes to data.json
@@ -67,29 +74,25 @@ const server = http.createServer((req, res) => {
   else if (url === '/admin' && method === 'GET') {
     const htmlPath = path.join(__dirname, 'adminpage.html');
     const dataPath = path.join(__dirname, 'data.json');
+    const colorDataPath = path.join(__dirname, 'colors.json');
+    try {
+      const jsonContent = await fs.promises.readFile(dataPath, 'utf-8');
+      const htmlContent = await fs.promises.readFile(htmlPath, 'utf-8');
+      const colorDataContent = await fs.promises.readFile(colorDataPath, 'utf-8');
 
-    // Reads data.json first
-    fs.readFile(dataPath, 'utf8', (err, jsonContent) => {
-      if (err) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        return res.end('Error loading data.json');
-      }
-
-      // Then reads adminpage.html
-      fs.readFile(htmlPath, 'utf8', (err, htmlContent) => {
-        if (err) {
-          res.writeHead(500, { 'Content-Type': 'text/plain' });
-          return res.end('Error loading admin.html');
-        }
-
-        // Injects data.json into adminpage.html
-        const output = htmlContent.replace('${json}', jsonContent);
-
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(output);
-      });
-    });
+      const output = htmlContent
+        .replace('${json}', jsonContent)
+        .replace('${colors}', colorDataContent);
+      
+      res.writeHead(200, {'Content-Type': 'text/html'});
+      res.end(output);
+    } catch (error) {
+      const errorMsg = error.path?.includes('data.json') ? 'Error loading data.json' : 'Error loading admin.html';
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end(errorMsg);
+    }
   }
+
   else if (url.startsWith('/logos/') && method === 'GET') {
     const fileName = url.substring(7);
     const filePath = path.join(__dirname, 'logos', fileName);
