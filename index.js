@@ -1,6 +1,7 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const { log } = require('node:console');
 
 const hostname = 'localhost';
 
@@ -21,7 +22,7 @@ const server = http.createServer(async (req, res) => {
       <html>
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-      <link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
       <head>
         <title>Canvas App</title>
       </head>
@@ -114,6 +115,16 @@ const server = http.createServer(async (req, res) => {
       }[ext] || 'application/octet-stream';
       
       res.writeHead(200, { 'Content-Type': contentType });
+      res.end(data);
+    });
+  } 
+  else if (url.startsWith('/icon/') && method === 'GET') {
+    fs.readFile("LEAGUE_ICON.png", (err, data) => {
+      if (err) {
+        res.writeHead(404);
+        return res.end('Image not found');
+      }
+      res.writeHead(200, { 'Content-Type': 'image/png' });
       res.end(data);
     });
   }

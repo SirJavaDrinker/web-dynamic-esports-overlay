@@ -32,6 +32,16 @@ logoImage2.onerror = function() {
     console.error('Failed to load logo image 2');
 };
 
+let leagueLogo = new Image();
+let leagueLogoLoaded = false;
+leagueLogo.onload = function() {
+    leagueLogoLoaded = true;
+    //console.log('Logo image 2 loaded successfully');
+};
+leagueLogo.onerror = function() {
+    console.error('Failed to load logo image 2');
+};
+
 // Request data from server to use within the overlay
 setInterval(() => {
   fetch('/data')
@@ -44,6 +54,7 @@ setInterval(() => {
         teamColor = data.teamColor;
         logoImage1.src = '/logos/'+data.teamLogos[0];
         logoImage2.src = '/logos/'+data.teamLogos[1];
+        leagueLogo.src = '/icon/'
         update();
     });
 }, 500);
@@ -94,7 +105,7 @@ function update() {
     ctx.fillStyle='white';
     ctx.textAlign="center";
     ctx.textBaseline = "top";
-    ctx.font = 'bold 29px "Exo 2"';
+    ctx.font = '29px "Russo One"';
     ctx.fillText(teamNames[0], centerX-(700/2), 3)
     ctx.fillText(teamNames[1], centerX+(700/2), 3)
 
@@ -154,25 +165,28 @@ function update() {
     if (image2Loaded) {
         drawImage(70, 70, logoImage2, centerX+595, 35);
     }
+    if (leagueLogoLoaded) {
+        drawImage(300, 300, leagueLogo, 150, centerY);
+    }
 
 
     ctx.fillStyle='white';
     ctx.textAlign="center";
     ctx.textBaseline = "top";
-    ctx.font = 'bold 27px "Exo 2"';
+    ctx.font = '25px "Russo One"';
 
     // !!! Change this line if you wish to change the league title/season. !!!
     // TODO: This editable via json file or other method outside of direct editing.
     ctx.fillText("CSK League S3", centerX, 4)
 
-    ctx.font = 'bold 16px "Exo 2"';
+    ctx.font = '16px "Russo One"';
     ctx.textBaseline = "bottom";
     ctx.textAlign="right";
-    ctx.fillText("UI by @javadrinker  ", centerX*2, canvas.height);
+    //ctx.fillText("UI by @javadrinker  ", centerX*2, canvas.height);
 
 
 
-    ctx.font = 'bold 24px "Exo 2"';
+    ctx.font = '24px "Russo One"';
 
     // Find box dimensions based on text size
     const padding = 22;
