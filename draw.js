@@ -62,6 +62,17 @@ setInterval(() => {
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    drawBanner();
+    drawScores();
+    drawMaps();
+    //drawSeriesTitle();
+
+    if (leagueLogoLoaded) {
+        drawImage(300, 300, leagueLogo, 150, centerY);
+    }
+}
+
+function drawBanner() {
     // ----------------------------------------- TEAM BAR LEFT
     ctx.fillStyle=teamColor[0];
     ctx.fillRect(centerX-550-40, 0, 550, 30);
@@ -109,30 +120,6 @@ function update() {
     ctx.fillText(teamNames[0], centerX-(700/2), 3)
     ctx.fillText(teamNames[1], centerX+(700/2), 3)
 
-    
-    // Draw team map scores.
-    const scorePosA = [centerX-(80), 90];
-    const scorePosB = [centerX+(80), 90];
-    
-    ctx.beginPath();
-    ctx.moveTo(scorePosA[0], scorePosA[1]);
-    ctx.fillStyle=teamColor[0];
-    ctx.arc(scorePosA[0], scorePosA[1], 16, 0, 2 * Math.PI);
-    ctx.fill();
-
-    
-    ctx.moveTo(scorePosB[0], scorePosB[1]);
-    ctx.beginPath();
-    ctx.fillStyle=teamColor[1];
-    ctx.arc(scorePosB[0], scorePosB[1], 16, 0, 2 * Math.PI);
-    ctx.fill();
-
-    ctx.fillStyle='white';
-
-    ctx.textBaseline = "middle";
-    ctx.fillText(score[0], scorePosA[0], scorePosA[1])
-    ctx.fillText(score[1], scorePosB[0], scorePosB[1])
-
     // Define points on polygon
     const sides = 6;
     const radius = 40;
@@ -165,9 +152,6 @@ function update() {
     if (image2Loaded) {
         drawImage(70, 70, logoImage2, centerX+595, 35);
     }
-    if (leagueLogoLoaded) {
-        drawImage(300, 300, leagueLogo, 150, centerY);
-    }
 
 
     ctx.fillStyle='white';
@@ -178,16 +162,35 @@ function update() {
     // !!! Change this line if you wish to change the league title/season. !!!
     // TODO: This editable via json file or other method outside of direct editing.
     ctx.fillText("CSK League S3", centerX, 4)
+}
 
-    ctx.font = '16px "Russo One"';
-    ctx.textBaseline = "bottom";
-    ctx.textAlign="right";
-    //ctx.fillText("UI by @javadrinker  ", centerX*2, canvas.height);
+function drawScores() {
+    // Draw team map scores.
+    const scorePosA = [centerX-(80), 90];
+    const scorePosB = [centerX+(80), 90];
+    
+    ctx.beginPath();
+    ctx.moveTo(scorePosA[0], scorePosA[1]);
+    ctx.fillStyle=teamColor[0];
+    ctx.arc(scorePosA[0], scorePosA[1], 16, 0, 2 * Math.PI);
+    ctx.fill();
 
+    
+    ctx.moveTo(scorePosB[0], scorePosB[1]);
+    ctx.beginPath();
+    ctx.fillStyle=teamColor[1];
+    ctx.arc(scorePosB[0], scorePosB[1], 16, 0, 2 * Math.PI);
+    ctx.fill();
 
+    ctx.fillStyle='white';
 
-    ctx.font = '24px "Russo One"';
+    ctx.textBaseline = "middle";
+    ctx.fillText(score[0], scorePosA[0], scorePosA[1])
+    ctx.fillText(score[1], scorePosB[0], scorePosB[1])
+}
 
+function drawMaps() {
+        ctx.font = '24px "Russo One"';
     // Find box dimensions based on text size
     const padding = 22;
     const boxHeight = 26;
@@ -241,7 +244,16 @@ function update() {
         currentX += boxWidth;
 
     }
+}
 
+function drawSeriesTitle() {
+    const grad=ctx.createLinearGradient(20, 0, 150, 0);
+    grad.addColorStop(0, "rgba(0, 0, 0, .5)");
+    grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+    ctx.fillStyle=grad;
+    ctx.beginPath();
+    ctx.fillRect(20, 0, 150, 20);
+    ctx.stroke();
 }
 
 function drawImage(maxHeight, maxWidth, Image, x, y) {
