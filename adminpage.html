@@ -63,10 +63,17 @@
     <p id="status"></p>
   </form>
 
-  <p>Intended to be used in tandem with OBS or a fork of OBS.</p>
+  <p id="version">...</p>
   <script>
     const data = ${json};
     const auto_colors = ${colors};
+    const package_data = ${p_data}
+    
+    function versioning() {
+      const version = package_data.version;
+      const version_label = document.getElementById('version');
+      version_label.textContent = `You are running version ${version}, it is best to ensure you are running the correct version.`;
+    }
     
 
     // Load available logos
@@ -136,6 +143,7 @@
     // Initialize form and load logos
     initializeForm();
     loadLogos();
+    versioning();
 
     // Logo preview event listeners
     document.getElementById('teamLogo1').addEventListener('change', () => {

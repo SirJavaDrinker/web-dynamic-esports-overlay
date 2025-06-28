@@ -76,14 +76,18 @@ const server = http.createServer(async (req, res) => {
     const htmlPath = path.join(__dirname, 'adminpage.html');
     const dataPath = path.join(__dirname, 'data.json');
     const colorDataPath = path.join(__dirname, 'colors.json');
+    const packageDataPath = path.join(__dirname, 'package.json');
+    
     try {
       const jsonContent = await fs.promises.readFile(dataPath, 'utf-8');
       const htmlContent = await fs.promises.readFile(htmlPath, 'utf-8');
       const colorDataContent = await fs.promises.readFile(colorDataPath, 'utf-8');
+      const packageDataContent = await fs.promises.readFile(packageDataPath, 'utf-8');
 
       const output = htmlContent
         .replace('${json}', jsonContent)
-        .replace('${colors}', colorDataContent);
+        .replace('${colors}', colorDataContent)
+        .replace('${p_data}', packageDataContent); 
       
       res.writeHead(200, {'Content-Type': 'text/html'});
       res.end(output);
