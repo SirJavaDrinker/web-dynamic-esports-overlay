@@ -1,0 +1,43 @@
+{
+    "league_logo": {
+        "show": true,
+        "pos": [150, 590],
+        "size": [300, 300]
+    },
+
+    "team_color_presets": {
+        "A1": "#9af764",
+        "BH": "#fbaeff",
+        "BL": "#1a8cb8",
+        "CSB": "#a6e7f5",
+        "CSS": "#46bdc6",
+        "CSH": "#cd6531",
+        "SFS": "#ff0000",
+        "GATO": "#440077",
+        "NW": "#00ff00",
+        "DDAY": "#f78fa7",
+        "ZERO": "#ADD8E6",
+        "ZA": "#FF0000",
+        "AET": "#9C57AF",
+        "POETS": "#45818E",
+        "SOL": "#FFD700"
+    },
+
+    "team_name_presets": {
+        "A1": "Aim1First",
+        "BH": "Baihua",
+        "BL": "Bluelock U20",
+        "CSB": "Blizzard",
+        "CSS": "Storm",
+        "CSH": "Horizon",
+        "SFS": "Six Friends",
+        "GATO": "El Gato",
+        "NW": "Nightwatch",
+        "DDAY": "Doomsday Project",
+        "ZERO": "Zero Gaming",
+        "ZA": "Zero Academy",
+        "AET": "For Aeternum",
+        "POETS": "The Lonliest Poets",
+        "SOL": "Solace"
+    }
+}

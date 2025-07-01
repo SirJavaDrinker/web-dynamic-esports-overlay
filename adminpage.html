@@ -59,14 +59,14 @@
     
     <button type="submit">Save</button>
     <button type="button" id="swap-btn">Swap Teams</button>
-    <button type="button" id="color-btn">Color Fill</button>
+    <button type="button" id="presets-btn">Fill From Preset</button>
     <p id="status"></p>
   </form>
 
   <p id="version">...</p>
   <script>
     const data = ${json};
-    const auto_colors = ${colors};
+    const user_settings = ${settings};
     const package_data = ${p_data}
     
     function versioning() {
@@ -218,9 +218,12 @@
       updateLogoPreview('teamLogo2', 'logo2Preview');
     });
   
-    document.getElementById('color-btn').addEventListener('click', () => {
+    document.getElementById('presets-btn').addEventListener('click', () => {
       const teamLogo1 = document.getElementById('teamLogo1').value;
       const teamLogo2 = document.getElementById('teamLogo2').value;
+      
+      const teamName1 = document.querySelector('textarea[name="teamName1"]');
+      const teamName2 = document.querySelector('textarea[name="teamName2"]');
       
       const teamColor1 = document.querySelector('textarea[name="teamColor1"]');
       const teamColor2 = document.querySelector('textarea[name="teamColor2"]');
@@ -230,19 +233,21 @@
       const logo2Key = teamLogo2 ? teamLogo2.replace('.png', '') : '';
       
       // Fill colors based on selected logos
-      if (logo1Key && auto_colors[logo1Key]) {
-        teamColor1.value = auto_colors[logo1Key];
+      if (logo1Key && user_settings.team_color_presets[logo1Key]) {
+        teamColor1.value = user_settings.team_color_presets[logo1Key];
+      }
+      if (logo2Key && user_settings.team_color_presets[logo2Key]) {
+        teamColor2.value = user_settings.team_color_presets[logo2Key];
+      }
+
+      if (logo1Key && user_settings.team_name_presets[logo1Key]) {
+        teamName1.value = user_settings.team_name_presets[logo1Key];
+      }
+      if (logo2Key && user_settings.team_name_presets[logo2Key]) {
+        teamName2.value = user_settings.team_name_presets[logo2Key];
       }
       
-      if (logo2Key && auto_colors[logo2Key]) {
-        teamColor2.value = auto_colors[logo2Key];
-      }
-      
-      if (filled.length <= 0) {
-        message = 'No colors to fill (select logos first or colors not found)';
-      }
-      
-      document.getElementById('status').textContent = "Filled in colors";
+      document.getElementById('status').textContent = "Filled from presets";
     });
   </script>
 </body>

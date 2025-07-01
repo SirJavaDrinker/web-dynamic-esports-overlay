@@ -60,6 +60,13 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(data);
   }
+
+  else if (url === '/settings' && method === 'GET') {
+    // Serves JSON colors.json
+    const data = fs.readFileSync('settings.json', 'utf-8');
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(data);
+  }
   
   else if (url === '/data' && method === 'POST') {
     // Recieves updated JSON data and writes to data.json
@@ -75,18 +82,19 @@ const server = http.createServer(async (req, res) => {
   else if (url === '/admin' && method === 'GET') {
     const htmlPath = path.join(__dirname, 'adminpage.html');
     const dataPath = path.join(__dirname, 'data.json');
-    const colorDataPath = path.join(__dirname, 'colors.json');
+    const settingsDataPath = path.join(__dirname, 'settings.json');
     const packageDataPath = path.join(__dirname, 'package.json');
+    
     
     try {
       const jsonContent = await fs.promises.readFile(dataPath, 'utf-8');
       const htmlContent = await fs.promises.readFile(htmlPath, 'utf-8');
-      const colorDataContent = await fs.promises.readFile(colorDataPath, 'utf-8');
+      const settingsDataContent = await fs.promises.readFile(settingsDataPath, 'utf-8');
       const packageDataContent = await fs.promises.readFile(packageDataPath, 'utf-8');
 
       const output = htmlContent
         .replace('${json}', jsonContent)
-        .replace('${colors}', colorDataContent)
+        .replace('${settings}', settingsDataContent)
         .replace('${p_data}', packageDataContent); 
       
       res.writeHead(200, {'Content-Type': 'text/html'});
