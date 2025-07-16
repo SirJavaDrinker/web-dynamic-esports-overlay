@@ -11,11 +11,11 @@ Allows real-time editing of match data such as score, map list, team names, and 
 - Dynamic map names
 - Easy side switch feature
 - Expandable logo catalog (add images to /logos/)
+- Team presets (names & colors linked to logos)
 
 ### Planned 📋
-- Gradients for colors
+- ~~Gradients for colors~~
 - Multiple layout options
-- Team presets
 - More settings such as league title
 
 ## Usage ⌨️
