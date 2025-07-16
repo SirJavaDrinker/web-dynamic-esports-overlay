@@ -4,10 +4,25 @@ const path = require('node:path');
 const { log } = require('node:console');
 
 const hostname = 'localhost';
+const port = 9999;
+
+const asciiArt = [
+  "░░░░░░░░░░░░░░░░░░░░░░░░ ╔═══════════════════════════════════════╗",
+  "░▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░ ║ hostname: "+hostname+"                   ║",
+  "░▒▒▒▒▒▒▒▒▒▒▒▒▒░▒▒▒▒▒▒▒░░ ║ port:     "+port+"                        ║",
+  "░░░░░░░░░░▒▒▒▒░▒▒▒░▒▒▒▒░ ╠═══════════════════════════════════════╣",
+  "░░░░░░░░░░▒▒▒▒░▒▒▒░░▒▒▒░ ║ overlay:  http://"+hostname+":"+port+"       ║",
+  "░░░░░░░░░░▒▒▒▒░▒▒▒░▒▒▒▒░ ║ settings: http://"+hostname+":"+port+"/admin"+" ║",
+  "░▒▒▒▒░░░░░▒▒▒▒░▒▒▒▒▒▒▒░░ ║                                       ║",
+  "░▒▒▒▒▒░░░▒▒▒▒▒░░░░░░░░░░ ║                                       ║",
+  "░░▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░ ║                                       ║",
+  "░░░▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░ ║         Keep this window open         ║",
+  "░░░░░░░░░░░░░░░░░░░░░░░░ ╚═══════════════════════════════════════╝"
+];
 
 // Change the below line if port 9999 is for some reason already taken up.
 // TODO: Make port & hostname editable via json file or other method outside of direct editing.
-const port = 9999;
+
 
 const server = http.createServer(async (req, res) => {
   const url = req.url;
@@ -168,10 +183,7 @@ const server = http.createServer(async (req, res) => {
     }
   });
 server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-  console.log(`----------------------------------------------------------------`)
-  console.log(` | ${hostname}:${port}/         will display the overlay.`)
-  console.log(` | ${hostname}:${port}/admin    will provide the control panel.`)
-  console.log(`----------------------------------------------------------------`)
-  console.log(`You may press ctrl+c to close the server.`);
+  for (let str in asciiArt) {
+    console.log(asciiArt[str]);
+  }
 });

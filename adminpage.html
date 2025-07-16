@@ -24,8 +24,12 @@
   <h2>Created by @javadrinker</h2>
   <form id="admin-form">
 
-    Score: <input type="text" name="score1"> <input type="text" name="score2">
-    Index: <input type="number" name="currentMap">
+
+    <label>Series Details<br><br>
+      Title: <textarea name="seriesTitle"></textarea> <br><br>
+      Score: <input type="text" name="score1"> <input type="text" name="score2">
+      Index: <input type="number" name="currentMap">
+    </label>
 
     <label>Map Titles<br>
       <textarea name="mapTitle1"></textarea>
@@ -56,7 +60,7 @@
       </select>
       <img id="logo2Preview" class="logo-preview" style="display:none;">
     </label>
-    
+
     <button type="submit">Save</button>
     <button type="button" id="swap-btn">Swap Teams</button>
     <button type="button" id="presets-btn">Fill From Preset</button>
@@ -138,6 +142,8 @@
       
       document.querySelector('textarea[name="teamColor1"]').value = data.teamColor[0];
       document.querySelector('textarea[name="teamColor2"]').value = data.teamColor[1];
+
+      document.querySelector('textarea[name="seriesTitle"]').value = data.seriesTitle;
     }
 
     // Initialize form and load logos
@@ -180,7 +186,8 @@
         teamLogos: [
           document.getElementById('teamLogo1').value,
           document.getElementById('teamLogo2').value
-        ]
+        ],
+        seriesTitle: document.querySelector('textarea[name="seriesTitle"]').value
       };
 
       const res = await fetch('/data', {

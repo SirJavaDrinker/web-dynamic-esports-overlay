@@ -5,6 +5,10 @@
         "size": [300, 300]
     },
 
+    "series_title": {
+        "show": true
+    },
+
     "team_color_presets": {
         "A1": "#9af764",
         "BH": "#fbaeff",
@@ -20,7 +24,11 @@
         "ZA": "#FF0000",
         "AET": "#9C57AF",
         "POETS": "#45818E",
-        "SOL": "#FFD700"
+        "SOL": "#FFD700",
+        "MGO": "#FF4570",
+        "NWT": "#E73927",
+        "NWM": "#6A60F7",
+        "BRHA": "#DA6526"
     },
 
     "team_name_presets": {
@@ -38,6 +46,10 @@
         "ZA": "Zero Academy",
         "AET": "For Aeternum",
         "POETS": "The Lonliest Poets",
-        "SOL": "Solace"
+        "SOL": "Solace",
+        "MGO": "Flamingos",
+        "NWT": "NW Twilight",
+        "NWM": "NW Midnight",
+        "BRHA": "BRIHNZ Academy"
     }
 }
