@@ -1,22 +1,124 @@
 <!DOCTYPE html>
-<!-- For the love of god I need to make this more user-friendly -->
 <html>
 <head>
   <title>Admin Panel</title>
   <style>
-    body { font-family: sans-serif; margin: 40px; background: #f9f9f9; }
-    label { display: block; margin-top: 15px; }
-    input, textarea, select { width: 50px; padding: 5px; margin-top: 5px; }
+    :root {
+      --bg: #f4f4f4;
+      --panel: #fff;
+      --border: #ddd;
+      --accent: #007acc;
+      --text: #333;
+    }
 
-    textarea { height: 15px; width: 100px; }
-    button { margin-top: 20px; padding: 10px 20px; }
+    * {
+      box-sizing: border-box;
+    }
 
-    .logo-preview { width: 30px; height: 30px; object-fit: contain; margin-left: 10px; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 30px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      color: var(--accent);
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: var(--panel);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    label span {
+      display: block;
+      font-weight: normal;
+      margin-bottom: 6px;
+      color: #555;
+    }
+
+    input, textarea, select {
+      font-size: 14px;
+      padding: 6px 10px;
+      margin-top: 4px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    textarea {
+      resize: none;
+      height: 25px;
+      width: 100%;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 80px;
+    }
+
+    select {
+      min-width: 120px;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 8px;
+    }
 
     .logo-label {
       display: flex;
       align-items: center;
-      gap: 10px;  
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .logo-preview {
+      width: 35px;
+      height: 35px;
+      object-fit: contain;
+      border: 1px solid var(--border);
+      background: #eee;
+      border-radius: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 16px;
+      background: var(--accent);
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #005f9a;
+    }
+
+    #status, #version {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #444;
+      text-align: center;
+      margin-top: 50px;
+      color: #777;
     }
   </style>
 </head>
@@ -24,43 +126,69 @@
   <h2>Created by @javadrinker</h2>
   <form id="admin-form">
 
-    Score: <input type="text" name="score1"> <input type="text" name="score2">
-    Index: <input type="number" name="currentMap">
-
-    <label>Map Titles<br>
-      <textarea name="mapTitle1"></textarea>
-      <textarea name="mapTitle2"></textarea>
-      <textarea name="mapTitle3"></textarea>
+    <label>
+      Series Details
+      <span>Title:</span>
+      <textarea name="seriesTitle"></textarea>
+      <div class="row">
+        <span>Score:</span>
+        <input type="text" name="score1">
+        <input type="text" name="score2">
+        <span>Index:</span>
+        <input type="number" name="currentMap">
+      </div>
     </label>
 
-    <label>Team Names<br>
-      <textarea name="teamName1"></textarea>
-      <textarea name="teamName2"></textarea>
+    <label>
+      Map Titles
+      <div class="row">
+        <textarea name="mapTitle1"></textarea>
+        <textarea name="mapTitle2"></textarea>
+        <textarea name="mapTitle3"></textarea>
+      </div>
     </label>
 
-    <label>Team Colors<br>
-      <textarea name="teamColor1"></textarea>
-      <textarea name="teamColor2"></textarea>
+    <label>
+      Team Names
+      <div class="row">
+        <textarea name="teamName1"></textarea>
+        <textarea name="teamName2"></textarea>
+      </div>
     </label>
 
-    <label class="logo-label">Team 1 Logo<br>
-      <select name="teamLogo1" id="teamLogo1">
-        <option value="">No Logo</option>
-      </select>
+    <label>
+      Team Colors
+      <div class="row">
+        <textarea name="teamColor1"></textarea>
+        <textarea name="teamColor2"></textarea>
+      </div>
+    </label>
+
+    <label class="logo-label">
+      <div>
+        Team 1 Logo
+        <select name="teamLogo1" id="teamLogo1">
+          <option value="">No Logo</option>
+        </select>
+      </div>
       <img id="logo1Preview" class="logo-preview" style="display:none;">
     </label>
 
-    <label class="logo-label">Team 2 Logo<br>
-      <select name="teamLogo2" id="teamLogo2">
-        <option value="">No Logo</option>
-      </select>
+    <label class="logo-label">
+      <div>
+        Team 2 Logo
+        <select name="teamLogo2" id="teamLogo2">
+          <option value="">No Logo</option>
+        </select>
+      </div>
       <img id="logo2Preview" class="logo-preview" style="display:none;">
     </label>
-    
+
     <button type="submit">Save</button>
     <button type="button" id="swap-btn">Swap Teams</button>
     <button type="button" id="presets-btn">Fill From Preset</button>
-    <p id="status"></p>
+
+    <p id="status">Press the save button to update the overlay.</p>
   </form>
 
   <p id="version">...</p>
@@ -138,6 +266,8 @@
       
       document.querySelector('textarea[name="teamColor1"]').value = data.teamColor[0];
       document.querySelector('textarea[name="teamColor2"]').value = data.teamColor[1];
+
+      document.querySelector('textarea[name="seriesTitle"]').value = data.seriesTitle;
     }
 
     // Initialize form and load logos
@@ -180,7 +310,8 @@
         teamLogos: [
           document.getElementById('teamLogo1').value,
           document.getElementById('teamLogo2').value
-        ]
+        ],
+        seriesTitle: document.querySelector('textarea[name="seriesTitle"]').value
       };
 
       const res = await fetch('/data', {
@@ -216,6 +347,8 @@
       // Update logo previews
       updateLogoPreview('teamLogo1', 'logo1Preview');
       updateLogoPreview('teamLogo2', 'logo2Preview');
+
+      document.getElementById('status').textContent = "Swapped sides. Press save to see changes on the overlay.";
     });
   
     document.getElementById('presets-btn').addEventListener('click', () => {
@@ -247,7 +380,7 @@
         teamName2.value = user_settings.team_name_presets[logo2Key];
       }
       
-      document.getElementById('status').textContent = "Filled from presets";
+      document.getElementById('status').textContent = "Filled from presets. Press save to see changes on the overlay.";
     });
   </script>
 </body>

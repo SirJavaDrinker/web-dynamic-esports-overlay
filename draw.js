@@ -24,8 +24,12 @@ let leagueLogoLoaded = false;
 
 let show_ll = false;
 
+let seriesTitle = "";
+
 loadImages();
 let ll_values = [300, 300, 150, centerY+50];
+
+let show_st = false;
 
 // Request data from server to use within the overlay
 setInterval(() => {
@@ -42,6 +46,8 @@ setInterval(() => {
         logoImage2.src = '/logos/'+data.teamLogos[1];
         leagueLogo.src = '/icon/'
 
+        seriesTitle = data.seriesTitle;
+
         update();
     });
     fetch('/settings')
@@ -49,6 +55,7 @@ setInterval(() => {
     .then(settings => {
         show_ll = settings.league_logo.show;
         ll_values = [settings.league_logo.size[0], settings.league_logo.size[1], settings.league_logo.pos[0], settings.league_logo.pos[1]];
+        show_st = settings.series_title.show;
     });
 }, 500);
 
@@ -58,10 +65,12 @@ function update() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (show_st) {
+        drawSeriesTitle(seriesTitle, 0, 0, 20);
+    }
     drawBanner();
     drawScores();
     drawMaps();
-    //drawSeriesTitle();
 
     if (leagueLogoLoaded && show_ll) {
         drawImage(ll_values[0], ll_values[1], leagueLogo, ll_values[2], ll_values[3]);
@@ -70,17 +79,23 @@ function update() {
 
 function drawBanner() {
     // ----------------------------------------- TEAM BAR LEFT
-    ctx.fillStyle=teamColor[0];
+    
+    let grad = ctx.createLinearGradient(centerX-550-40, 0, 550, 0);
+    grad.addColorStop(0, shadeColor(teamColor[0], -30));
+    grad.addColorStop(1, teamColor[0]);
+    ctx.fillStyle=grad
     ctx.fillRect(centerX-550-40, 0, 550, 30);
+
+    ctx.fillStyle=teamColor[0];
 
     ctx.strokeStyle = 'black';
 
-    let startPoint = centerX-550-120;
+    let startPoint = centerX-550-110;
 
     ctx.beginPath();
     ctx.moveTo(startPoint, 0); // bottom left
-    ctx.lineTo(startPoint + 120, 0); // bottom right
-    ctx.lineTo(startPoint + 120 + 20, 70); // top right (shifted left)
+    ctx.lineTo(startPoint + 110, 0); // bottom right
+    ctx.lineTo(startPoint + 110 + 20, 70); // top right (shifted left)
     ctx.lineTo(startPoint + 20, 70); // top left (shifted left)
     ctx.closePath();
     ctx.lineWidth = 2;
@@ -91,15 +106,19 @@ function drawBanner() {
 
     // ---------------------------------------- TEAM BAR RIGHT
 
-    ctx.fillStyle=teamColor[1];
-    ctx.fillRect(centerX+40, 0, 550, 30);
-
-    startPoint = centerX+550;
+    let grad2 = ctx.createLinearGradient(centerX + 40, 0, centerX + 40 + 550, 0);
+    grad2.addColorStop(1, shadeColor(teamColor[1], -30));
+    grad2.addColorStop(0, teamColor[1]);                  
+    ctx.fillStyle = grad2;
+    ctx.fillRect(centerX + 40, 0, 510, 30);
+    
+    ctx.fillStyle = teamColor[1];
+    startPoint = centerX + 550;
 
     ctx.beginPath();
     ctx.moveTo(startPoint, 0); // bottom left
-    ctx.lineTo(startPoint + 120, 0); // bottom right
-    ctx.lineTo(startPoint + 120 - 20, 70); // top right (shifted left)
+    ctx.lineTo(startPoint + 110, 0); // bottom right
+    ctx.lineTo(startPoint + 110 - 20, 70); // top right (shifted left)
     ctx.lineTo(startPoint - 20, 70); // top left (shifted left)
     ctx.closePath();
     ctx.stroke();
@@ -148,8 +167,7 @@ function drawBanner() {
     if (image2Loaded) {
         drawImage(70, 70, logoImage2, centerX+595, 35);
     }
-
-
+    
     ctx.fillStyle='white';
     ctx.textAlign="center";
     ctx.textBaseline = "top";
@@ -161,6 +179,7 @@ function drawBanner() {
 }
 
 function drawScores() {
+
     // Draw team map scores.
     const scorePosA = [centerX-(80), 90];
     const scorePosB = [centerX+(80), 90];
@@ -177,6 +196,9 @@ function drawScores() {
     ctx.fillStyle=teamColor[1];
     ctx.arc(scorePosB[0], scorePosB[1], 16, 0, 2 * Math.PI);
     ctx.fill();
+    
+    ctx.textAlign="center";
+    ctx.font = '25px "Russo One"';
 
     ctx.fillStyle='white';
 
@@ -186,10 +208,10 @@ function drawScores() {
 }
 
 function drawMaps() {
-        ctx.font = '24px "Russo One"';
+    ctx.font = '22px "Russo One"';
     // Find box dimensions based on text size
     const padding = 22;
-    const boxHeight = 26;
+    const boxHeight = 28;
     const shiftLeft = -20;
 
     let currentX = -20;
@@ -242,14 +264,30 @@ function drawMaps() {
     }
 }
 
-function drawSeriesTitle() {
-    const grad=ctx.createLinearGradient(20, 0, 150, 0);
-    grad.addColorStop(0, "rgba(0, 0, 0, .5)");
+function drawSeriesTitle(text, x, y, padding) {
+    ctx.textAlign = "start";
+    ctx.textBaseline = "top";
+    ctx.font = '20px "Russo One"';
+    
+    const measurements = ctx.measureText(text);
+    const textWidth = measurements.width;
+    const boxX = x;
+    const boxY = y;
+    const boxWidth = textWidth + padding * 2;
+    const boxHeight = 25;
+
+    const grad = ctx.createLinearGradient(boxX, 0, boxX + boxWidth, 0);
+    grad.addColorStop(0, "rgba(0, 0, 0, 0)");
+    grad.addColorStop(0.15, "rgba(0, 0, 0, .9)");
+    grad.addColorStop(0.85, "rgba(0, 0, 0, .9)");
     grad.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle=grad;
-    ctx.beginPath();
-    ctx.fillRect(20, 0, 150, 20);
-    ctx.stroke();
+
+    
+    ctx.fillStyle = grad;
+    ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+
+    ctx.fillStyle = 'white';
+    ctx.fillText(text, x + padding, y + 5);
 }
 
 function drawImage(maxHeight, maxWidth, Image, x, y) {
@@ -317,3 +355,5 @@ function shadeColor(color, percent) {
 
     return "#"+RR+GG+BB;
 }
+
+// This is all a mess but it's not like I'm making any money, so whatever.
